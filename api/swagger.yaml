@@ -1,0 +1,953 @@
+---
+swagger: "2.0"
+info:
+  description: "This is api for GearUp Camera"
+  version: "1.0.0"
+  title: "GearUp Camera"
+  contact:
+    name: "GearUp team"
+    url: "http://www.gearup.com"
+    email: "gearup@support.com"
+host: "localhost:3200"
+basePath: "/v1"
+tags:
+  - name: "Status"
+    description: "Gives the status of service"
+  - name: "Authentication"
+    description: "Routes related to user sign in and user sign up"
+  - name: "Category"
+    description: "Routes related to camera category"
+  - name: "SubCategory"
+    description: "Routes related to sub-category"
+  - name: "ProductType"
+    description: "Routes related to product-type"
+  - name: "Product"
+    description: "Routes related to Product"
+  - name: "Brand"
+    description: "Routes related to Brand"
+  - name: "User"
+    description: "Routes related to User"
+  - name: "Admin"
+    description: "Routes related to Admin"
+  - name: "Cart"
+    description: "Routes related to Cart"
+  - name: "Favorite-products"
+    description: "Routes related to user's favourite product"
+  - name: "Terms-Condition"
+    description: "Routes related to terms and condition"
+  - name: "Privacy-policy"
+    description: "Routes related to privacy policy"
+  - name: "Shipping-address"
+    description: "Routes related to shipping address"
+  - name: "Offer"
+    description: "Routes related to product offer"
+  - name: "Recent-view"
+    description: "Routes related to recently viewed product"
+  - name: "Order"
+    description: "Routes related to product order"
+  - name: "Blog"
+    description: "Routes related to blog"
+  - name: "Notification"
+    description: "Routes related to notification"
+  - name: "Chat"
+    description: "Routes related to chat"
+  - name: "Payment"
+    description: "Routes related to payment"
+  - name: "Review"
+    description: "Routes related to product review"
+  - name: "Contact-us"
+    description: "Routes related to contact app support"
+  - name: "Notification-settings"
+    description: "Routes related to app notification settings"
+schemes:
+  - "http"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+paths:
+  /sign-up:
+    post:
+      x-swagger-router-controller: "Authentication"
+      operationId: "userSignUp"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: The payload for user details
+          schema:
+            $ref: "#/definitions/user_signUp_details"
+      x-public-operation: true
+      responses:
+        201:
+          description: "The JWT token after the user is successfully created"
+          schema:
+            $ref: "#/definitions/user_create_response"
+        400:
+          description: "validation error while creating new user"
+          schema:
+            $ref: "#/definitions/user_create_validation_error"
+        default:
+          $ref: "#/responses/server_error_model"
+      tags:
+        - "Authentication"
+      summary: "API to create a new user"
+      description: "This API is responsible for creating a new user"
+  /sign-in:
+    post:
+      x-swagger-router-controller: "Authentication"
+      operationId: "userSignIn"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: The user details for signing in
+          schema:
+            $ref: "#/definitions/user_sign_in_params"
+      x-public-operation: true
+      responses:
+        200:
+          description: "The JWT token after the user is successfully sign in"
+          schema:
+            $ref: "#/definitions/user_create_response"
+        400:
+          description: "Validation error while signing in"
+          schema:
+            $ref: "#/definitions/user_create_validation_error"
+        404:
+          $ref: "#/responses/resource_not_found"
+        default:
+          $ref: "#/responses/server_error_model"
+      tags:
+        - "Authentication"
+      summary: "API for sign in a user"
+      description: "This API is responsible for signing in a user"
+  /user/{user_id}:
+    parameters:
+      - $ref: "#/parameters/x-request-jwt"
+      - $ref: "#/parameters/user_id"
+    put:
+      x-swagger-router-controller: "Authentication"
+      operationId: "updateUserDetails"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      security:
+        - jwt: []
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: The payload for user details
+          schema:
+            $ref: "#/definitions/user_details"
+      responses:
+        200:
+          $ref: "#/responses/user_with_id_response"
+        400:
+          description: "validation error while updating user with given user_id"
+          schema:
+            $ref: "#/definitions/user_create_validation_error"
+        401:
+          $ref: "#/responses/authorization_error_model"
+        404:
+          $ref: "#/responses/resource_not_found"
+        default:
+          $ref: "#/responses/server_error_model"
+      tags:
+        - "User"
+      summary: "API to update user with given user_id"
+      description: "This API is responsible for updating user with given user_id"
+    get:
+      x-swagger-router-controller: "Authentication"
+      operationId: "getUser"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      security:
+        - jwt: []
+      responses:
+        200:
+          $ref: "#/responses/user_with_id_response"
+        400:
+          description: "validation error while fetching user details"
+          schema:
+            $ref: "#/definitions/user_create_validation_error"
+        401:
+          $ref: "#/responses/authorization_error_model"
+        404:
+          $ref: "#/responses/resource_not_found"
+        default:
+          $ref: "#/responses/server_error_model"
+      tags:
+        - "User"
+      summary: "API to get user details"
+      description: "This API is responsible for getting user details"
+  /user/{user_id}/change-password:
+    parameters:
+      - $ref: "#/parameters/x-request-jwt"
+      - $ref: "#/parameters/user_id"
+    put:
+      x-swagger-router-controller: "Authentication"
+      operationId: "changePassword"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      security:
+        - jwt: []
+      parameters:
+        - name: user
+          in: body
+          required: true
+          description: The payload for user details
+          schema:
+            $ref: "#/definitions/change_pass_details"
+      responses:
+        200:
+          $ref: "#/responses/user_with_id_response"
+        400:
+          description: "validation error while updating user with given user_id"
+          schema:
+            $ref: "#/definitions/user_create_validation_error"
+        401:
+          $ref: "#/responses/authorization_error_model"
+        404:
+          $ref: "#/responses/resource_not_found"
+        default:
+          $ref: "#/responses/server_error_model"
+      tags:
+        - "User"
+      summary: "API to update user with given user_id"
+      description: "This API is responsible for updating user with given user_id"
+  /users:
+    get:
+      x-swagger-router-controller: "Authentication"
+      operationId: "getUserList"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      security:
+        - jwt: []
+      parameters:
+        - $ref: "#/parameters/x-request-jwt"
+      responses:
+        200:
+          description: "Get all users"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/user_response"
+        204:
+          description: "Empty user list"
+          schema:
+            $ref: "#/responses/empty_list"
+        400:
+          description: "validation error while fetching all users"
+          schema:
+            $ref: "#/definitions/user_create_validation_error"
+        401:
+          $ref: "#/responses/authorization_error_model"
+        default:
+          $ref: "#/responses/server_error_model"
+      tags:
+        - "User"
+      summary: "API to fetch all user"
+      description: "This API is responsible for fetching all user"
+  /chat/generate-token:
+    parameters:
+      - $ref: "#/parameters/x-request-jwt"
+    post:
+      x-swagger-router-controller: "Chat"
+      operationId: "generateToken"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      security:
+        - jwt: []
+      parameters:
+        - name: client
+          in: body
+          required: true
+          description: The payload for chat client details
+          schema:
+            $ref: "#/definitions/client_details"
+      responses:
+        200:
+          description: "The access token after the user is successfully created"
+          schema:
+            $ref: "#/definitions/token_generate_response"
+        400:
+          description: "validation error while generating access token"
+          schema:
+            $ref: "#/definitions/user_create_validation_error"
+        401:
+          $ref: "#/responses/authorization_error_model"
+        default:
+          $ref: "#/responses/server_error_model"
+      tags:
+        - "Chat"
+      summary: "API to store user's channel details"
+      description: "This API is responsible for storing user's channel detais"
+  /chat/channel:
+    parameters:
+      - $ref: "#/parameters/x-request-jwt"
+    post:
+      x-swagger-router-controller: "Chat"
+      operationId: "createChannel"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      security:
+        - jwt: []
+      parameters:
+        - name: channel
+          in: body
+          required: true
+          description: The payload for chat channel details
+          schema:
+            $ref: "#/definitions/channel_details"
+      responses:
+        201:
+          $ref: "#/responses/channel_with_id_response"
+        400:
+          description: "validation error while creating channel"
+          schema:
+            $ref: "#/definitions/category_validation_error"
+        401:
+          $ref: "#/responses/authorization_error_model"
+        default:
+          $ref: "#/responses/server_error_model"
+      tags:
+        - "Chat"
+      summary: "API to create channel"
+      description: "This API is responsible for storing user's channel detais"
+    get:
+      x-swagger-router-controller: "Chat"
+      operationId: "getChannelList"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      security:
+        - jwt: []
+      responses:
+        200:
+          description: User channel list
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/channel_detail_response"
+        204:
+          description: "Empty chat list"
+          schema:
+            $ref: "#/responses/empty_list"
+        400:
+          description: "validation error while fetching all channels of particular user"
+          schema:
+            $ref: "#/definitions/category_validation_error"
+        401:
+          $ref: "#/responses/authorization_error_model"
+        default:
+          $ref: "#/responses/server_error_model"
+      tags:
+        - "Chat"
+      summary: "API to fetch all channels of particular user"
+      description: "This API is responsible for fetching all channels of particular user"
+  /chat/channel/{channel_id}/message:
+    parameters:
+      - $ref: "#/parameters/x-request-jwt"
+      - $ref: "#/parameters/channel_id"
+    post:
+      x-swagger-router-controller: "Chat"
+      operationId: "sendMsg"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      security:
+        - jwt: []
+      parameters:
+        - name: message
+          in: body
+          required: true
+          description: The payload for message details
+          schema:
+            $ref: "#/definitions/message_details"
+      responses:
+        201:
+          $ref: "#/responses/message_with_id_response"
+        400:
+          description: "validation error while creating messages"
+          schema:
+            $ref: "#/definitions/category_validation_error"
+        401:
+          $ref: "#/responses/authorization_error_model"
+        default:
+          $ref: "#/responses/server_error_model"
+      tags:
+        - "Chat"
+      summary: "API to create message"
+      description: "This API is responsible for creating message"
+    get:
+      x-swagger-router-controller: "Chat"
+      operationId: "getMessageList"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: "#/parameters/limit"
+      security:
+        - jwt: []
+      responses:
+        200:
+          description: "Get all messages of particular channel"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/message_response"
+        204:
+          description: "Empty message list"
+          schema:
+            $ref: "#/responses/empty_list"
+        400:
+          description: "validation error while getting all messages of particular channel"
+          schema:
+            $ref: "#/definitions/category_validation_error"
+        401:
+          $ref: "#/responses/authorization_error_model"
+        default:
+          $ref: "#/responses/server_error_model"
+      tags:
+        - "Chat"
+      summary: "API to get all message of particular channel"
+      description: "This API is responsible for getting all message of particular channel"
+  /status:
+    get:
+      x-swagger-router-controller: "StatusDetails"
+      operationId: "getSystemStatus"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      x-public-operation: true
+      responses:
+        200:
+          description: "The server status will be returned"
+          schema:
+            $ref: "#/definitions/server_status_response"
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/server_error_model"
+      tags:
+        - "Status"
+      summary: "Gets the status of the service"
+definitions:
+  mongo_default_fields:
+    type: "object"
+    required:
+      - _id
+      - created_at
+      - updated_at
+      - __v
+    properties:
+      _id:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+      __v:
+        type: integer
+  user_create_validation_error:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - REQUIRED
+          - PATTERN
+          - INVALID_TYPE
+          - SCHEMA_VALIDATION_FAILED
+          - CONTENT_TYPE_NOT_SUPPORTED
+          - MODEL_VALIDATION_FAILED
+      message:
+        type: string
+      errors:
+        type: array
+        items:
+          $ref: "#/definitions/user_create_validation_single_error"
+  user_create_validation_single_error:
+    type: object
+    required:
+      - code
+      - message
+      - path
+    properties:
+      code:
+        type: string
+        enum:
+          - PATTERN
+          - ENUM_MISMATCH
+          - INVALID_TYPE
+          - OBJECT_ADDITIONAL_PROPERTIES
+          - MIN_LENGTH
+          - OBJECT_MISSING_REQUIRED_PROPERTY
+      message:
+        type: string
+      path:
+        type: array
+        items:
+          type: string
+  category_validation_error:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - REQUIRED
+          - PATTERN
+          - SCHEMA_VALIDATION_FAILED
+          - CONTENT_TYPE_NOT_SUPPORTED
+          - MODEL_VALIDATION_FAILED
+      message:
+        type: string
+      errors:
+        type: array
+        items:
+          $ref: "#/definitions/category_validation_single_error"
+  category_validation_single_error:
+    type: object
+    required:
+      - code
+      - message
+      - path
+    properties:
+      code:
+        type: string
+        enum:
+          - PATTERN
+          - ENUM_MISMATCH
+          - INVALID_TYPE
+          - OBJECT_ADDITIONAL_PROPERTIES
+          - MIN_LENGTH
+          - MAX_LENGTH
+          - OBJECT_MISSING_REQUIRED_PROPERTY
+      message:
+        type: string
+      path:
+        type: array
+        items:
+          type: string
+  server_error_model:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      stack:
+        type: string
+  server_status_response:
+    type: "object"
+    required:
+      - "up_time"
+    properties:
+      up_time:
+        type: "integer"
+  exception_model:
+    type: "object"
+  resource_not_found_model:
+    description: "No resource found"
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - RESOURCE_NOT_FOUND
+      message:
+        type: string
+  empty_list_model:
+    description: "No records found"
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+        enum:
+          - NO_CONTENT
+      message:
+        type: string
+  authorization_error_model:
+    type: "object"
+    required:
+      - "code"
+      - "message"
+    properties:
+      code:
+        type: "string"
+        enum:
+          - AUTHORIZATION_ERROR
+      message:
+        type: "string"
+  conflict_error_model:
+    type: "object"
+    required:
+      - "code"
+      - "message"
+    properties:
+      code:
+        type: "string"
+        enum:
+          - CONFLICT_ERROR
+      message:
+        type: "string"
+  user_signUp_details:
+    type: "object"
+    required:
+      - firstname
+      - lastname
+      - email
+      - password
+    properties:
+      firstname:
+        type: string
+        pattern: ^[A-Za-z ]{2,}$
+        description: "The firstname of user"
+      lastname:
+        type: string
+        pattern: ^[A-Za-z ]{2,}$
+        description: "The lastname of user"
+      email:
+        type: string
+        pattern: ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z0-9]{2,}$
+        description: "The email Id"
+      password:
+        type: string
+        minLength: 8
+        pattern: ^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})
+        description: "The password"
+  user_sign_in_params:
+    type: "object"
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        pattern: ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z0-9]{2,}$
+        description: "The email Id"
+      password:
+        type: string
+        minLength: 8
+        pattern: ^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})
+        description: "The password"
+  user_details:
+    type: "object"
+    properties:
+      firstname:
+        type: string
+        pattern: ^[A-Za-z ]{2,}$
+        description: "The firstname of user"
+      lastname:
+        type: string
+        pattern: ^[A-Za-z ]{2,}$
+        description: "The lastname of user"
+      contact_no:
+        type: string
+        description: "The contact_number"
+      profile_pic:
+        type: string
+        description: "The profile picture"
+  change_pass_details:
+    type: "object"
+    properties:
+      old_password:
+        type: string
+        description: "The old password"
+      new_password:
+        type: string
+        minLength: 8
+        pattern: ^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})
+        description: "The new password"
+  client_details:
+    type: object
+    properties:
+      identity:
+        type: string
+        description: "The user identity"
+      deviceId:
+        type: string
+        description: "The user device_id"
+    additionalProperties: false
+  channel_details:
+    type: object
+    properties:
+      friendly_name:
+        type: string
+        description: "The channel friendly name"
+      sender_id:
+        type: string
+        pattern: ^[0-9a-fA-F]{24}$
+        description: "The channel creator"
+      receiver_id:
+        type: string
+        pattern: ^[0-9a-fA-F]{24}$
+        description: "The channel member"
+    additionalProperties: false
+  channel_object:
+    type: "object"
+    properties:
+      channel_sid:
+        type: string
+        description: "The channel-id"
+      users:
+        type: array
+        items:
+          type: string
+    additionalProperties: false
+  channel_detail_object:
+    type: "object"
+    properties:
+      channel:
+        type: object
+        properties:
+          sid:
+            type: string
+          accountSid:
+            type: string
+          serviceSid:
+            type: string
+          friendlyName:
+            type: string
+          uniqueName:
+            type: string
+          attributes:
+            type: object
+          type:
+            type: string
+            enum:
+              - private
+              - public
+          dateCreated:
+            type: string
+            format: date-time
+          dateUpdated:
+            type: string
+            format: date-time
+          createdBy:
+            type: string
+          membersCount:
+            type: number
+          messagesCount:
+            type: number
+          url:
+            type: string
+          links:
+            type: object
+            properties:
+              webhooks:
+                type: string
+              messages:
+                type: string
+              invites:
+                type: string
+              members:
+                type: string
+              last_message:
+                type: string
+      users:
+        type: array
+        items:
+          - $ref: "#/definitions/user_response"
+    additionalProperties: false
+  message_details:
+    type: object
+    properties:
+      from:
+        type: string
+        pattern: ^[0-9a-fA-F]{24}$
+        description: "The sender_id"
+      to:
+        type: string
+        description: "The SID of the Channel that the message was sent to."
+      body:
+        type: string
+        description: "The message content"
+      lastUpdatedBy:
+        type: string
+        pattern: ^[0-9a-fA-F]{24}$
+        description: "The message sender"
+    additionalProperties: false
+  user_response:
+    allOf:
+      - $ref: "#/definitions/mongo_default_fields"
+      - $ref: "#/definitions/user_signUp_details"
+      - type: object
+        properties:
+          contact_no:
+            type: string
+          profile_img:
+            type: string
+  channel_response:
+    allOf:
+      - $ref: "#/definitions/mongo_default_fields"
+      - $ref: "#/definitions/channel_object"
+  channel_detail_response:
+    allOf:
+      - $ref: "#/definitions/mongo_default_fields"
+      - $ref: "#/definitions/channel_detail_object"
+  token_generate_response:
+    type: object
+    properties:
+      identity:
+        type: string
+      token:
+        type: string
+  user_create_response:
+    type: "object"
+    required:
+      - "token"
+    properties:
+      user_id:
+        type: "string"
+        description: "The user_id"
+      email:
+        type: "string"
+        description: "The user email"
+      firstname:
+        type: "string"
+        description: "The user name"
+      lastname:
+        type: "string"
+        description: "The user name"
+      token:
+        type: "string"
+        description: "The token for user authentication"
+  message_response:
+    allOf:
+      - $ref: "#/definitions/message_details"
+      - type: object
+        properties:
+          sid:
+            type: string
+          accountSid:
+            type: string
+          attributes:
+            type: object
+          serviceSid:
+            type: string
+          channelSid:
+            type: string
+          dateCreated:
+            type: string
+            format: date-time
+          dateUpdated:
+            type: string
+            format: date-time
+          wasEdited:
+            type: boolean
+          index:
+            type: number
+          type:
+            type: string
+            enum:
+              - text
+              - media
+          media:
+            type: object
+          media_data:
+            type: object
+          url:
+            type: string
+parameters:
+  x-request-jwt:
+    name: x-request-jwt
+    in: header
+    type: string
+    required: true
+  channel_id:
+    name: channel_id
+    in: path
+    type: string
+    required: true
+  user_id:
+    name: user_id
+    in: path
+    type: string
+    pattern: ^[0-9a-fA-F]{24}$
+    required: true
+  limit:
+    name: limit
+    in: query
+    type: integer
+    description: 'The message list limit'
+responses:
+  user_with_id_response:
+    description: "The details of user"
+    schema:
+      $ref: "#/definitions/user_response"
+  channel_with_id_response:
+    description: "The details of user channel"
+    schema:
+      $ref: "#/definitions/channel_response"
+  message_with_id_response:
+    description: "The details of user message"
+    schema:
+      $ref: "#/definitions/message_response"
+  resource_not_found:
+    description: "Resource not found"
+    schema:
+      $ref: "#/definitions/resource_not_found_model"
+  empty_list:
+    description: "Empty List"
+    schema:
+      $ref: "#/definitions/empty_list_model"
+  server_error_model:
+    description: "Server error occurred"
+    schema:
+      $ref: "#/definitions/server_error_model"
+  authorization_error_model:
+    description: "Failed to authorize the user making the request"
+    schema:
+      $ref: "#/definitions/authorization_error_model"
+  conflict_error:
+    description: "Already exist"
+    schema:
+      $ref: "#/definitions/conflict_error_model"
+securityDefinitions:
+  jwt:
+    type: apiKey
+    in: header
+    name: x-request-jwt

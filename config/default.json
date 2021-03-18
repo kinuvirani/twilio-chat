@@ -1,0 +1,37 @@
+{
+  "server": {
+    "port": 3200
+  },
+  "client_errors": {
+    "400": {"error_code": null, "log_level": "notice"},
+    "401": {"error_code": "AUTHORIZATION_ERROR", "log_level": "notice"},
+    "404": {"error_code": "RESOURCE_NOT_FOUND", "log_level": "notice"},
+    "405": {"error_code": "METHOD_NOT_SUPPORTED", "log_level": "notice"},
+    "406": {"error_code": "CONTENT_TYPE_NOT_SUPPORTED", "log_level": "notice"},
+    "409": {"error_code": "CONFLICT_ERROR", "log_level": "notice"}
+  },
+  "mongo": {
+    "database_host": "mongodb://localhost:27017/demo",
+    "options": {
+      "useNewUrlParser": true,
+      "useUnifiedTopology": true
+    }
+  },
+  "keys": {
+    "jwt_secret_key": "6MrnYHZapzmgk0yJ0VgF"
+  },
+  "logger": {
+    "stack": {
+      "app": "Twlio-chat-app"
+    },
+    "level": "info"
+  },
+  "swagger_ui_config": {},
+  "chat": {
+    "account_sid": "AC066d05428ebcb51909cfacf3239b6247",
+    "chat_service_id": "IS8be432e9b66a41f6beaf9f8bef047f86",
+    "key_id": "SK64feed76646abd3ecacf397b10f98f72",
+    "secret": "AQ5b5po4vvJL8EcbFaRPqkvicVAAyl6i",
+    "auth_token": "a8cd990dc9a5adf117abcdb4865d02fe"
+  }
+}
